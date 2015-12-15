@@ -5,15 +5,14 @@ This library allows the storage and manipulation of records in datasets using a 
 
 ## Data types
 
-Valid data types for the schema include: STR, INT, FLOAT, BOOL, DATE, TIME, DATETIME
+Valid data types for the schema include: STR, INT, FLOAT, ARRAY, BOOL, DATETIME
 
 Examples:
 STR: "Hello world"
+ARRAY: ["hello", "world", 34]
 INT: 4
 FLOAT: 1.00324
 BOOL: True
-DATE: "2015-01-28"
-TIME: "16:17:03"
 DATETIME: "2015-01-28 16:17:03"
 
 ## Usage

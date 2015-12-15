@@ -13,7 +13,15 @@ class DDT:
 	def get(self, name): # Retrieve an item
 		if not name in self._data:
 			raise ValueError("Name '" + str(name) + "' does not exist in dataset.")
-		return self._data[name]
+		data2 = self._data[name]
+		for k,v in data2.items():
+			if self._schema[k.upper()] == type(self._available_types['DATE']): 
+				data2[k] = str(v).split()[0]
+			elif self._schema[k.upper()] == type(self._available_types['DATETIME']): 
+				data2[k] = str(v)
+			else:
+				data2[k] = v
+		return data2
 
 	def add(self, data, name = None): # Add a new item
 		if not name:
@@ -34,6 +42,11 @@ class DDT:
 						data2[k] = datetime.datetime.strptime(v, "%Y-%m-%d")
 					except:
 						raise ValueError("Type of '" + str(v) + "' does not match schema: " + str(self._schema[k.upper()]))					
+				elif self._schema[k.upper()] == type(self._available_types['DATETIME']):
+					try:
+						data2[k] = datetime.datetime.strptime(v, "%Y-%m-%d %H:%M:%S")
+					except:
+						raise ValueError("Type of '" + str(v) + "' does not match schema: " + str(self._schema[k.upper()]))					
 				elif type(v) != self._schema[k.upper()]:
 					raise ValueError("Type of '" + str(v) + "' does not match schema: " + str(self._schema[k.upper()]))
 				else:
@@ -51,7 +64,7 @@ class DDT:
 		return self._schema
 
 	def __init__(self, schema = {}, constraints = {}, data = {}): # Initialize default values
-		self._available_types = {"INT": 5, "STR": "aa", "FLOAT": 4.2, "BOOL": True, "DATE": datetime.date.today()}
+		self._available_types = {"INT": 5, "STR": "aa", "FLOAT": 4.2, "BOOL": True, "DATETIME": datetime.datetime.now(), "DATE": datetime.date.today(), "ARRAY": [1,2]}
 		self._data = data
 		self._constraints = constraints
 		self._schema = schema
