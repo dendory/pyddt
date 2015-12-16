@@ -3,7 +3,7 @@ setup(
   name = 'pyddt',
   packages = ['pyddt'],
   version = '1.0',
-  description = 'Python 3.x implementation of Dictionary Data Type',
+  description = 'Python 3.4+ implementation of Dictionary Data Type',
   author = 'Patrick Lambert',
   author_email = 'dendory@live.ca',
   url = 'https://github.com/dendory/pyddt', 

@@ -3,6 +3,10 @@
 #
 import uuid
 import datetime
+import hashlib
+import pickle
+
+version = "1.0"
 
 class DDT:
 	def remove(self, name): # Remove an item
@@ -19,13 +23,27 @@ class DDT:
 				data2[k] = str(v).split()[0]
 			elif self._schema[k.upper()] == type(self._available_types['DATETIME']): 
 				data2[k] = str(v)
+			elif self._schema[k.upper()] == type(self._available_types['HASH']): 
+				data2[k] = v.hexdigest()
 			else:
 				data2[k] = v
 		return data2
 
+	def save(self, filename): # Save dataset
+		data2 = {'version': version, 'constraints': self._constraints, 'schema': self._schema, 'data': self._data}
+		with open(filename, 'wb') as f:
+			pickle.dump(data2, f, protocol=4)
+
+	def load(self, filename): # Load dataset
+		with open(filename, 'rb') as f:
+			data2 = pickle.loads(f.read())
+		self._data = data2['data']
+		self._constraints = data2['constraints']
+		self._schema = data2['schema']
+
 	def add(self, data, name = None): # Add a new item
 		if not name:
-			name = uuid.uuid4()
+			name = str(uuid.uuid4())
 		if name in self._data:
 			raise ValueError("Name '" + str(name) + "' already exists in dataset.")
 		if self._schema == {}:
@@ -42,6 +60,17 @@ class DDT:
 						data2[k] = datetime.datetime.strptime(v, "%Y-%m-%d")
 					except:
 						raise ValueError("Type of '" + str(v) + "' does not match schema: " + str(self._schema[k.upper()]))					
+				elif self._schema[k.upper()] == type(self._available_types['BOOLEAN']):
+					if str(v).upper() == "FALSE" or str(v).upper() == "F" or str(v) == "0":
+						data2[k] = False
+					elif str(v).upper() == "TRUE" or str(v).upper() == "T" or str(v) == "1":
+						data2[k] = True
+					else:
+						raise ValueError("Type of '" + str(v) + "' does not match schema: " + str(self._schema[k.upper()]))
+				elif self._schema[k.upper()] == type(self._available_types['HASH']):
+					m = hashlib.sha256()
+					m.update(str(v).encode('utf-8'))
+					data2[k] = m
 				elif self._schema[k.upper()] == type(self._available_types['DATETIME']):
 					try:
 						data2[k] = datetime.datetime.strptime(v, "%Y-%m-%d %H:%M:%S")
@@ -64,7 +93,7 @@ class DDT:
 		return self._schema
 
 	def __init__(self, schema = {}, constraints = {}, data = {}): # Initialize default values
-		self._available_types = {"INT": 5, "STR": "aa", "FLOAT": 4.2, "BOOL": True, "DATETIME": datetime.datetime.now(), "DATE": datetime.date.today(), "ARRAY": [1,2]}
+		self._available_types = {'INT': 5, 'STR': "aa", 'FLOAT': 4.2, 'BOOLEAN': True, 'DATETIME': datetime.datetime.now(), 'DATE': datetime.date.today(), 'ARRAY': [1,2], 'HASH': hashlib.sha256()}
 		self._data = data
 		self._constraints = constraints
 		self._schema = schema

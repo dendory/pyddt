@@ -1,19 +1,20 @@
 # PyDDT
-Python 3.x implementation of Dictionary Data Type
+Python 3.4+ implementation of Dictionary Data Type
 
 This library allows the storage and manipulation of records in datasets using a custom schema and dictionary structure. It provides many data types and utility functions to make it easy to deal with data in a fast and efficient manner.
 
 ## Data types
 
-Valid data types for the schema include: STR, INT, FLOAT, ARRAY, BOOL, DATETIME
+Valid data types for the schema include: STR, INT, FLOAT, ARRAY, BOOLEAN, DATETIME, HASH
 
 Examples:
 STR: "Hello world"
 ARRAY: ["hello", "world", 34]
 INT: 4
 FLOAT: 1.00324
-BOOL: True
+BOOLEAN: True
 DATETIME: "2015-01-28 16:17:03"
+HASH: sha256("Hello world")
 
 ## Usage
 
